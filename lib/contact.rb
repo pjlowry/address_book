@@ -1,6 +1,6 @@
 class Contact
   attr_reader :name, :phone, :email, :address
-  def initialize(name='notempty', phone='notempty', email='notempty', address='notempty')
+  def initialize(name='', phone='', email='', address='')
     @name = name
     @phone = phone
     @email = email
@@ -30,7 +30,11 @@ class Contact
   end
 
   def ==(other)
-    self.name == other.name && self.phone == other.phone && self.email == other.email && self.address == other.address
+    if other.class != Contact
+      false
+    else
+      self.name == other.name && self.phone == other.phone && self.email == other.email && self.address == other.address
+    end
   end 
 
   def delete
