@@ -22,7 +22,7 @@ require 'spec_helper'
   context '#add' do
     it 'adds contacts to my address book, so that I can store my contacts in one place.' do
       Contact.find_by_name('George').should eq nil
-      contact = Contact.new('George','916-357-1392', 'notreally@myemail.com','1724 H St., Sacramento, CA 95811')
+      contact = Contact.new('George')
       contact.add
       Contact.find_by_name('George').should eq contact
       DB.exec("DELETE FROM contacts *;")
@@ -30,7 +30,7 @@ require 'spec_helper'
 
     it 'retrieves the auto-id from the database and applies to the object.' do
       # DB.should_receive(:exec).with("INSERT INTO contacts (name, phone, email, address) VALUES ('George', '916-357-1392', 'notreally@myemail.com', '1724 H St., Sacramento, CA 95811')")
-      contact = Contact.new('Josefus','916-357-1392', 'notreally@myemail.com','1724 H St., Sacramento, CA 95811')
+      contact = Contact.new('Josefus')
       contact.add
       id = DB.exec("SELECT id FROM contacts where name = 'Josefus'").inject([]) { |matches, contact_hash| matches << contact_hash['id'] }[0]
       contact.id.should eq id
@@ -39,7 +39,7 @@ require 'spec_helper'
 
   context '.find_by_name' do
     it 'displays a contact and all of their contact information.' do
-      contact1 = Contact.new('George','916-357-1392', 'notreally@myemail.com','1724 H St., Sacramento, CA 95811')
+      contact1 = Contact.new('George')
       contact1.add
       contact2 = Contact.find_by_name('George')
       contact2.should eq contact1 
@@ -57,33 +57,33 @@ require 'spec_helper'
   end
 
 
-#   context '#==' do
-#     it 'returns true if two contacts contain the same name, phone number, email, and mailing address' do
-#       contact1 = Contact.new('George','916-357-1392', 'notreally@myemail.com','1724 H St., Sacramento, CA 95811')
-#       contact2 =  Contact.new('George','916-357-1392', 'notreally@myemail.com','1724 H St., Sacramento, CA 95811')
-#       contact1.should eq contact2
-#       DB.exec("DELETE FROM contacts *;")
-#     end
-#   end
+  context '#==' do
+    it 'returns true if two contacts contain the same name, phone number, email, and mailing address' do
+      contact1 = Contact.new('George')
+      contact2 =  Contact.new('George')
+      contact1.should eq contact2
+      DB.exec("DELETE FROM contacts *;")
+    end
+  end
 
-#   context '#edit' do
-#     it 'edits a contact, so that I can update their information if it changes.' do
-#       contact = Contact.new('George','916-357-1392', 'notreally@myemail.com','1724 H St., Sacramento, CA 95811')
-#       contact.add
-#       contact2 = Contact.new('George','916-357-1392', 'georgiegeorge@myemail.com','1724 H St., Sacramento, CA 95811')
-#       contact2.edit('', '', 'georgiegeorge@myemail.com')
-#       Contact.find_by_name('George').should eq contact2
-#       DB.exec("DELETE FROM contacts *;")
-#     end
-#   end
+  context '#edit' do
+    it 'edits a contact, so that I can update their information if it changes.' do
+      contact = Contact.new('George')
+      contact.add
+      contact2 = Contact.new('George')
+      contact2.edit('Georgino')
+      Contact.find_by_name('Georgino').should eq contact2
+      DB.exec("DELETE FROM contacts *;")
+    end
+  end
 
-#   context '#delete' do
-#     it 'deletes a contact.' do
-#       contact = Contact.new('George','916-357-1392', 'notreally@myemail.com','1724 H St., Sacramento, CA 95811')
-#       contact.add
-#       contact.delete
-#       Contact.find_by_name('George').should eq nil
-#     end
-#   end
+  context '#delete' do
+    it 'deletes a contact.' do
+      contact = Contact.new('George')
+      contact.add
+      contact.delete
+      Contact.find_by_name('George').should eq nil
+    end
+  end
 
 end

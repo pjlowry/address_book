@@ -1,5 +1,9 @@
 require 'pg'
 require './lib/contact'
+require './lib/phone'
+require './lib/email'
+require './lib/address'
+
 
 DB = PG.connect(:dbname => 'address_book')
 
@@ -35,19 +39,61 @@ def menu
 end
 
 def add
-  puts "Please enter your name:"
+  puts "Please enter your contact's name:"
   name = gets.chomp
-  puts "Please enter your phone number:"
-  phone = gets.chomp
-  puts "Please enter your email:"
-  email = gets.chomp
-  puts "Please enter your mailing address:"
-  address = gets.chomp
-  contact = Contact.new(name, phone, email, address)
+  contact = Contact.new('name')
   contact.add
-  puts "The following information has been added to your contacts:"
-  puts "    " + name + ' ' + phone + ' ' + email + ' ' + address 
+  number_array = ask_for_multiple('phone number',['work','cell','home'])
+  number_array.each do |info_array| 
+    phone = Phone.new(info_array[0],info_array[1], contact.id) 
+    phone.add
+    puts "Phone number added: #{info_array[0]} #{info_array[1]}"
+  end
+  email_array = ask_for_multiple('email',['work','home'])
+  email_array.each do |info_array| 
+    email = Email.new(info_array[0],info_array[1], contact.id) 
+    email.add
+    puts "Email added: #{info_array[0]} #{info_array[1]}"
+  end
+  add_address(contact)
 end
+
+def add_address(contact)
+  puts "Please enter a type of address, home or work:"
+  type = gets.chomp
+  puts "Please enter your contact's street and apartment number:"
+  street = gets.chomp
+  puts "Please enter your contact's city:"
+  city = gets.chomp
+  puts "Please enter your contact's state:"
+  state = gets.chomp
+  puts "Please enter your contact's zip code:"
+  zip = gets.chomp
+  address = Address.new(type, street, city, state, zip, contact.id)
+  address.add
+  puts "Address added: #{street}, #{city}, #{state}, #{zip} (#{type})"
+
+  puts "Would you like to add another address? Press 'n' for no."
+  unless gets.chomp == 'n'
+    add_address(contact)
+  end
+end
+
+
+def ask_for_multiple(whatever,options,array=[]) 
+  mini_array = []
+  puts "What type of #{whatever} do you want to add?: #{options.join(', ')}"
+  mini_array << gets.chomp
+  puts "Please enter your #{whatever}."
+  mini_array << gets.chomp
+  array << mini_array
+  puts "Would you like to enter another? (type 'y' for yes, anything else for no.)"
+  if gets.chomp == 'y'
+    ask_for_multiple(whatever,options,array)
+  end
+  array
+end
+
 
 def list
   puts "Here is a list of all your contacts:"
@@ -79,7 +125,7 @@ def edit
   puts "Edited contact '#{found_name}'"
 end
 
-def find
+def find #join table
   puts "Whose contact information would you like to see?"
   name = gets.chomp
   contact = Contact.find_by_name(name)
