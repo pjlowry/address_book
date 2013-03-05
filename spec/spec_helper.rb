@@ -1,6 +1,9 @@
 require 'rspec'
 require 'pg'
 require 'contact'
+require 'phone'
+require 'email'
+require 'address'
 
 DB = PG.connect(:dbname => 'address_book_test')
 
