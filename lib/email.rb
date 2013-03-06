@@ -11,7 +11,11 @@ class Email
   end
 
   def self.find_by_id(id)
-    DB.exec("SELECT * FROM email WHERE email.id = #{id}").inject([]) { |matches, email_hash| matches << Email.new(email_hash['type'], email_hash['email'], email_hash['id'].to_i) }
+    DB.exec("SELECT * FROM email WHERE email.id = #{id}").inject([]) { |matches, hash| matches << Email.new(hash['type'], hash['email'], hash['id'].to_i) }
+  end
+
+  def self.find_by(column_name,value, id)
+    DB.exec("SELECT * FROM email WHERE email.#{column_name} = '#{value}' AND email.id = #{id}").inject([]) { |matches, hash| matches << Email.new(hash['type'], hash['email'], hash['id'].to_i) }
   end
 
   def ==(other)
@@ -26,13 +30,9 @@ class Email
     DB.exec("DELETE FROM email WHERE email.id = '#{@id}'")
   end
 
-
-  def edit(type='', number='', id=0)
-    old_type = @type
+  def edit(type='', email='', id=@id)
     @type = type unless type.empty?
-    old_number = @number
-    @number = number unless number.empty?
-    DB.exec("UPDATE email SET type = '#{@type}', email = '#{@email}' WHERE email.id = '#{@id}';")
+    @email = email unless email.empty?    
+    DB.exec("UPDATE email SET type = '#{@type}', email = '#{@email}' WHERE email.id = '#{@id} AND email.type = '#{@type}';")
   end
-
 end

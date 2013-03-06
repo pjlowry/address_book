@@ -8,16 +8,22 @@ describe Email do
       email = Email.new('work', 'bob@bob.com', 4444)
       email.add
       Email.find_by_id(4444).should eq [email]
-      DB.exec("DELETE FROM email *;")
     end
   end
 
   context '#find_by_id' do 
-    it 'finds a phone number and type by a contacts id number, returning an array of phone objects' do 
+    it 'finds a email number and type by a contacts id number, returning an array of email objects' do 
       email = Email.new('work', '843-333-4444',1111)
       email.add
       Email.find_by_id(1111).should eq [email]
-      DB.exec("DELETE FROM email *;")
+    end
+  end
+
+  context '#find_by' do 
+    it 'finds a email number and type by a contacts id number, returning an array of email objects' do 
+      email = Email.new('work', '843-333-4444',1111)
+      email.add
+      Email.find_by('type', 'work', 1111).should eq [email]
     end
   end
 
@@ -26,8 +32,6 @@ describe Email do
       email1 = Email.new('work', 'john@john.com', 3333)
       email2 = Email.new('work', 'john@john.com', 3333)
       email1.should eq email2
-      DB.exec("DELETE FROM email *;")
-      # DB.exec("DELETE FROM phone *;")
     end
   end
 
@@ -47,7 +51,6 @@ describe Email do
       email2 = Email.new('home','mary.jane@gmail.com', 2222)
       email2.edit('','mary.jane@gmail.com',2222)
       Email.find_by_id(2222).should eq [email2]
-      DB.exec("DELETE FROM email *;")
     end
   end
 end

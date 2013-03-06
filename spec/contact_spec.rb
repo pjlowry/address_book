@@ -25,7 +25,6 @@ require 'spec_helper'
       contact = Contact.new('George')
       contact.add
       Contact.find_by_name('George').should eq contact
-      DB.exec("DELETE FROM contacts *;")
     end
 
     it 'retrieves the auto-id from the database and applies to the object.' do
@@ -43,7 +42,6 @@ require 'spec_helper'
       contact1.add
       contact2 = Contact.find_by_name('George')
       contact2.should eq contact1 
-      DB.exec("DELETE FROM contacts *;")
     end
   end
 
@@ -52,7 +50,6 @@ require 'spec_helper'
       names = ['Bob', 'George']
       names.each { |list_name| Contact.new(list_name).add}
       Contact.list_names.map { |contact| contact.name }.should =~ names
-      DB.exec("DELETE FROM contacts *;")
     end
   end
 
@@ -62,7 +59,6 @@ require 'spec_helper'
       contact1 = Contact.new('George')
       contact2 =  Contact.new('George')
       contact1.should eq contact2
-      DB.exec("DELETE FROM contacts *;")
     end
   end
 
@@ -73,7 +69,6 @@ require 'spec_helper'
       contact2 = Contact.new('George')
       contact2.edit('Georgino')
       Contact.find_by_name('Georgino').should eq contact2
-      DB.exec("DELETE FROM contacts *;")
     end
   end
 

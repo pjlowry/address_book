@@ -19,12 +19,20 @@ describe Phone do
     end
   end
 
+  context '.find_by' do 
+    it 'finds a phone number and type by a contacts id number, returning an array of phone objects' do 
+      number = Phone.new('work', '843-333-4444',1111)
+      number.add
+      Phone.find_by('type', 'work', 1111).should eq [number]
+    end
+  end
+
   context '#==' do
     it 'returns true if two phone numbers contain the same type, phone number, and id' do
       phone1 = Phone.new('cell', '939-333-3333', 3333)
       phone2 =  Phone.new('cell', '939-333-3333', 3333)
       phone1.should eq phone2
-      # DB.exec("DELETE FROM phone *;")
+      
     end
   end
 
@@ -43,9 +51,8 @@ describe Phone do
       phone = Phone.new('cell','916-357-1392', 2222)
       phone.add
       phone2 = Phone.new('work','916-357-1392', 2222)
-      phone2.edit('work')
+      phone.edit('work',2222)
       Phone.find_by_id(2222).should eq [phone2]
-      DB.exec("DELETE FROM contacts *;")
     end
   end
 

@@ -8,7 +8,6 @@ describe Address do
       address = Address.new('work', '1 2nd st', 'folsom', 'CA','92343',4444)
       address.add
       Address.find_by_id(4444).should eq [address]
-      DB.exec("DELETE FROM Address *;")
     end
   end
 
@@ -17,7 +16,14 @@ describe Address do
       address = Address.new('home', '10 infinite loop', 'cupertino', 'CA', '92092',1111)
       address.add
       Address.find_by_id(1111).should eq [address]
-      DB.exec("DELETE FROM Address *;")
+    end
+  end
+
+  context '#find_by_id' do 
+    it 'finds a phone number and type by a contacts id number, returning an array of phone objects' do 
+      address = Address.new('home', '10 infinite loop', 'cupertino', 'CA', '92092',1111)
+      address.add
+      Address.find_by('type','home',1111).should eq [address]
     end
   end
 
@@ -26,7 +32,6 @@ describe Address do
       address1 = Address.new('work', '999 something blvd.', 'elsewhere', 'NV', '91111', 3333)
       address2 = Address.new('work', '999 something blvd.', 'elsewhere', 'NV', '91111', 3333)
       address1.should eq address2
-      DB.exec("DELETE FROM Address *;")
     end
   end
 
@@ -36,6 +41,16 @@ describe Address do
       address.add
       address.delete
       Address.find_by_id(2222).should eq []
+    end
+  end
+
+  context '#edit' do
+    it 'edits a contacts address' do
+      address1 = Address.new('work', '999 something blvd.', 'elsewhere', 'NV', '91111', 3333)
+      address2 = Address.new('work', '123 4th st.', 'hereville', 'NV', '91111', 3333)
+      address1.add
+      address2.edit('', '123 4th st.', 'hereville')
+      Address.find_by_id(3333).should eq [address2]
     end
   end
 end

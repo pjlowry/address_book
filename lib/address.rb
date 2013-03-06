@@ -14,7 +14,11 @@ class Address
   end
 
   def self.find_by_id(id)
-    DB.exec("SELECT * FROM address WHERE address.id = #{id}").inject([]) { |matches, address_hash| matches << Address.new(address_hash['type'], address_hash['street'], address_hash['city'], address_hash['state'], address_hash['zip'], address_hash['id'].to_i) }
+    DB.exec("SELECT * FROM address WHERE address.id = #{id}").inject([]) { |matches, hash| matches << Address.new(hash['type'], hash['street'], hash['city'], hash['state'], hash['zip'], hash['id'].to_i) }
+  end
+
+  def self.find_by(column_name,value, id)
+    DB.exec("SELECT * FROM address WHERE address.#{column_name} = '#{value}' AND address.id = #{id}").inject([]) { |matches, hash| matches << Address.new(hash['type'], hash['street'], hash['city'], hash['state'], hash['zip'], hash['id'].to_i) }
   end
 
   def ==(other)
@@ -27,6 +31,15 @@ class Address
 
   def delete 
     DB.exec("DELETE FROM address WHERE address.id = '#{@id}'")
+  end
+
+  def edit(type='', street='',city='',state='',zip='', id=@id)
+    @type = type unless type.empty?
+    @street = street unless street.empty?
+    @city = city unless city.empty?
+    @state = state unless state.empty?
+    @zip = zip unless zip.empty?
+    DB.exec("UPDATE address SET type = '#{@type}', street = '#{@street}', city = '#{@city}', state = '#{@state}', zip = '#{@zip}' WHERE address.id = #{@id} AND address.type = '#{@type}';")
   end
 
 end

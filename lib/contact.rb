@@ -10,10 +10,10 @@ class Contact
     #@id = DB.exec("SELECT id FROM contacts where name = '#{@name}'")[0]['id'] 
   end
 
-  def edit(name) #needs substantial refactoring
+  def edit(name) #needs a tiny bit of refactoring
       old_name = @name
       @name = name unless name.empty?
-      DB.exec("UPDATE contacts SET name = '#{@name}' WHERE name = '#{old_name}';")
+      DB.exec("UPDATE contacts SET name = '#{@name}' WHERE name = '#{old_name}';") #change WHERE to look for id
   end
   
   def self.list_names

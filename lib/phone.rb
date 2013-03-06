@@ -11,7 +11,11 @@ class Phone
   end
 
   def self.find_by_id(id)
-    DB.exec("SELECT * FROM phone WHERE phone.id = #{id}").inject([]) { |matches, phone_hash| matches << Phone.new(phone_hash['type'], phone_hash['number'], phone_hash['id'].to_i) }
+    DB.exec("SELECT * FROM phone WHERE phone.id = #{id}").inject([]) { |matches, hash| matches << Phone.new(hash['type'], hash['number'], hash['id'].to_i) }
+  end
+
+  def self.find_by(column_name,value, id)
+    DB.exec("SELECT * FROM phone WHERE phone.#{column_name} = '#{value}' AND phone.id = #{id}").inject([]) { |matches, hash| matches << Phone.new(hash['type'], hash['number'], hash['id'].to_i) }
   end
 
   def ==(other)
@@ -26,11 +30,9 @@ class Phone
     DB.exec("DELETE FROM phone WHERE phone.id = '#{@id}'")
   end
 
-  def edit(type='', number='', id=0)
-    old_type = @type
+  def edit(type='', number='', id=@id)
     @type = type unless type.empty?
-    old_number = @number
     @number = number unless number.empty?
-    DB.exec("UPDATE phone SET type = '#{@type}', number = '#{@number}' WHERE phone.id = '#{@id}';")
+    DB.exec("UPDATE phone SET type = '#{@type}', number = '#{@number}' WHERE phone.id = #{@id} AND phone.type = '#{@type}';")
   end
 end
